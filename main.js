@@ -5,15 +5,17 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import axios from 'axios'
 import * as Font from 'expo-font'
+import { StatusBar } from 'react-native'
 import { AppLoading } from 'expo'
 import Login from './routes/login'
 import Home from './routes/home'
+import Details from './routes/details'
 import store from './redux/store'
 import { fetchData } from './redux/actions/fetchData'
 
 const Stack = createStackNavigator()
 
-function Main(props) {
+function Main() {
   const [dataLoaded, setDataLoaded] = useState(false)
   const [userLogin, setUserLogin] = useState(false)
 
@@ -34,10 +36,7 @@ function Main(props) {
         })
         .catch(err => console.log('Axios', err))
 
-        if(props.userDetails.userDetailsReducer.userDetails.email 
-          && props.userDetails.userDetailsReducer.userDetails.pass){
-          setUserLogin(true)
-        }
+        userState()
 
         setDataLoaded(true)
 
@@ -46,17 +45,22 @@ function Main(props) {
       }
     }
     getData()
-    console.log(store.getState().userDetailsReducer.userDetails)
-    console.log('props', props.userDetails.userDetailsReducer.userDetails)
+    store.subscribe(() => {
+      userState()
+    })
+  },[userLogin])
 
-    if(props.userDetails.userDetailsReducer.userDetails.email 
-        && props.userDetails.userDetailsReducer.userDetails.pass){
+
+  const userState = () => {
+    let email = store.getState().userDetailsReducer.userDetails.email
+    let pass = store.getState().userDetailsReducer.userDetails.pass
+    
+    if(email && pass){
         setUserLogin(true)
+    } else {
+      setUserLogin(false)
     }
-
-
-  },[])
-
+  }
 
   if(!dataLoaded){
     return (
@@ -65,14 +69,20 @@ function Main(props) {
   }
 
   return (
-    <NavigationContainer>
-        <Provider store={store}>
-          <Stack.Navigator>
-              {userLogin === false && <Stack.Screen name='Prisijungti' component={Login} />}
-              <Stack.Screen name='namai' component={Home} />
-          </Stack.Navigator>
-      </Provider>
-    </NavigationContainer>
+      <Provider store={store}>
+        <StatusBar barStyle='dark-content' />
+        <NavigationContainer>
+              {userLogin === false ?
+              <Stack.Navigator>
+                <Stack.Screen name='Prisijungti' component={Login} options={{headerShown: false}} /> 
+              </Stack.Navigator>: 
+              <Stack.Navigator>
+                <Stack.Screen name='Žemėlapis' component={Home} options={{headerShown: false}} />
+                <Stack.Screen name='Pradinis miestas' component={Details} />
+              </Stack.Navigator>
+              }
+      </NavigationContainer>
+    </Provider>
   )
 }
 

@@ -22,7 +22,19 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.MapApp.MapApp",
+      "config":{
+        "googleMapsApiKey": "AIzaSyBsWt5_Y6otbKJFr7mLY8i5mA8lAR7bQEM"
+      }
+    },
+    "android": {
+      "package": "com.MapApp.MapApp",
+      "config": {
+        "googleMaps": {
+            "apiKey": "<android maps key>"
+        }
+      }
     }
   }
 }

@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import {
     View, 
     Text, 
@@ -8,8 +8,8 @@ import {
     Keyboard
 } from 'react-native'
 import MainButton from '../components/button'
-import {connect} from 'react-redux'
-import {userDetails} from '../redux/actions/userDetails'
+import { connect } from 'react-redux'
+import { userDetails } from '../redux/actions/userDetails'
 
 function Login({dispatch}) {
     const [email, setEmail] = useState('')
@@ -54,7 +54,8 @@ const style = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        width: '100%'
+        width: '100%',
+        backgroundColor: '#ffffff'
     }, 
     header: {
         fontFamily: 'montserratBold',

@@ -29,6 +29,7 @@ const style = StyleSheet.create({
         color: '#ffffff',
         padding: 10,
         fontFamily: 'montserratBold',
-        textTransform: 'uppercase'
+        textTransform: 'uppercase',
+        fontSize: 10
     }
 })
