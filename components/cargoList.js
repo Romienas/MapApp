@@ -5,24 +5,45 @@ import {
      FlatList, 
      StyleSheet, 
      Image,
-     TouchableOpacity
+     TouchableOpacity,
+     UIManager,
+     LayoutAnimation
     } from 'react-native'
 import { connect } from 'react-redux'
 import store from '../redux/store'
 import Button from './button'
 import { userDetails } from '../redux/actions/userDetails'
 
+if (
+    Platform.OS === "android" &&
+    UIManager.setLayoutAnimationEnabledExperimental
+  ) {
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+  }
+  
+
 function CargoList({ dispatch, navigation }) {
     const [data, setData] = useState({})
+    const [showList, setShowList] = useState(true)
 
     useEffect(() => {
         setData(store.getState().fetchDataReducer.fetchData.data.routes)
+
+        store.subscribe(() => {
+            if (store.getState().showListReducer.showList === false){
+                showHideList(false)
+            }
+        })
     },[])
 
     const logOut = () => {
         dispatch(userDetails({}))
     }
 
+    const showHideList = (bool) => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.linear)
+        setShowList(bool)
+    }
 
     function Item({
         navigate,
@@ -75,8 +96,8 @@ function CargoList({ dispatch, navigation }) {
     }
 
     return(
-        <View style={styles.container}>
-            <Text style={styles.header}>Pasirinkite krovinį</Text>
+        <View style={showList ? styles.container : styles.containerHide}>
+            <Text style={styles.header} onPress={() => showHideList(true)}>Pasirinkite krovinį</Text>
             <FlatList 
                 data={data}
                 keyExtractor={item => item.id}
@@ -99,7 +120,13 @@ function CargoList({ dispatch, navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-        flex:1.5,
+        flex: 1.5,
+        backgroundColor: '#ffffff',
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20
+    },
+    containerHide: {
+        flex: 0.1,
         backgroundColor: '#ffffff',
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20

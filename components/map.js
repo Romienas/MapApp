@@ -4,8 +4,10 @@ import { StyleSheet, View, Dimensions, Linking } from 'react-native';
 import store from '../redux/store'
 import { AppLoading } from 'expo'
 import MapViewDirections from 'react-native-maps-directions'
+import { showList } from '../redux/actions/showList'
+import { connect } from 'react-redux'
 
-function Map() {
+function Map({ dispatch }) {
     const [data, setData] = useState([])
     const [loaded, setLoaded] = useState(false)
     const [originCoordinates, setOriginCoordinates] = useState({})
@@ -39,10 +41,12 @@ function Map() {
     }
 
     const openMap = (coordinates) => {
-        console.log('jhasvdgasd')
         Linking.openURL(`https://www.google.com/maps/dir/?api=1&destination=${coordinates.latitude},${coordinates.longitude}`)
     }
 
+    const hideList = () => {
+        dispatch(showList(false))
+    }
 
     if(!loaded){
         return (
@@ -60,7 +64,7 @@ function Map() {
                     latitudeDelta: 12,
                     longitudeDelta: 12
                 }}
-                onPress={() => console.log('asfsdf')}
+                onPress={() => hideList()}
             >
                 {data.map(marker => {
                     return (<Marker
@@ -86,6 +90,7 @@ function Map() {
                             latitude: marker.endLat
                         }}
                         image={require('../assets/placeholder.png')}
+                        style={styles.marker}
                     />)}
                 )}
                 <MapViewDirections 
@@ -95,8 +100,7 @@ function Map() {
                     mode='DRIVING'
                     strokeColor='#2200FF'
                     strokeWidth={2}
-                    onPress={() => console.log('veikia')}
-                    // onPress={() => openMap(originCoordinates)}
+                    onPress={() => openMap(originCoordinates)}
                 />
             </MapView>
         </View>
@@ -113,7 +117,13 @@ const styles = StyleSheet.create({
     mapStyle: {
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').height,
-    },
+    }
   });
 
-export default Map
+  const mapStateToProps = (state) => {
+    return {
+        showList: state
+    }
+}
+
+export default connect(mapStateToProps)(Map)
