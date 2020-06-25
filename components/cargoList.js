@@ -27,13 +27,20 @@ function CargoList({ dispatch, navigation }) {
     const [showList, setShowList] = useState(true)
 
     useEffect(() => {
-        setData(store.getState().fetchDataReducer.fetchData.data.routes)
+        let subscribed = true
+        if(subscribed) {
+            setData(store.getState().fetchDataReducer.fetchData.data.routes)
 
-        store.subscribe(() => {
-            if (store.getState().showListReducer.showList === false){
-                showHideList(false)
-            }
-        })
+            store.subscribe(() => {
+                if (store.getState().showListReducer.showList === false){
+                    showHideList(false)
+                }
+            })
+        } else {
+            setData(true)
+        }
+
+        return () => (subscribed = false)
     },[])
 
     const logOut = () => {
